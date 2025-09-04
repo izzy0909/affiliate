@@ -20,19 +20,24 @@ class AffiliateDistanceService
     public function filterByDistance(array $affiliates): Collection
     {
         return collect($affiliates)
-            ->filter(function ($affiliate) {
-                $distance = $this->distanceBetweenPoints(
-                    $affiliate['latitude'], $affiliate['longitude']
-                );
+            ->filter(
+                function ($affiliate) {
+                    $distance = $this->distanceBetweenPoints(
+                        $affiliate['latitude'],
+                        $affiliate['longitude']
+                    );
 
-                return $distance <= self::MAX_DISTANCE;
-            })
+                    return $distance <= self::MAX_DISTANCE;
+                }
+            )
             ->sortBy('affiliate_id')
             ->values()
-            ->map(fn($affiliate) => [
+            ->map(
+                fn($affiliate) => [
                 'affiliate_id' => $affiliate['affiliate_id'],
                 'name' => $affiliate['name'],
-            ]);
+                ]
+            );
     }
 
     /**
@@ -51,10 +56,10 @@ class AffiliateDistanceService
         $deltaLongitude = $affiliateLongitudeRadians - $officeLongitudeRadians;
         $deltaLatitude = $affiliateLatitudeRadians - $officeLatitudeRadians;
 
-        $a = sin($deltaLatitude / 2) ** 2
+        $haversineFormulaPart = sin($deltaLatitude / 2) ** 2
             + cos($officeLatitudeRadians) * cos($affiliateLatitudeRadians) * sin($deltaLongitude / 2) ** 2;
-        $c = 2 * asin(min(1, sqrt($a)));
+        $angularDistance = 2 * asin(min(1, sqrt($haversineFormulaPart)));
 
-        return self::EARTH_RADIUS_KM * $c;
+        return self::EARTH_RADIUS_KM * $angularDistance;
     }
 }

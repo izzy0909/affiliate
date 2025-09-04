@@ -8,8 +8,15 @@ class AffiliateFileParserService
     {
         $fileLines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-        return array_values(array_filter(array_map(function ($line) {
-            return json_validate($line) ? json_decode($line, true) : null;
-        }, $fileLines)));
+        return array_values(
+            array_filter(
+                array_map(
+                    function ($line) {
+                        return json_validate($line) ? json_decode($line, true) : null;
+                    },
+                    $fileLines
+                )
+            )
+        );
     }
 }

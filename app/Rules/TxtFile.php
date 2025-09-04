@@ -10,9 +10,9 @@ class TxtFile implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  \Closure(string): void  $fail
+     * @param  string                 $attribute
+     * @param  mixed                  $value
+     * @param  \Closure(string): void $fail
      * @return void
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void

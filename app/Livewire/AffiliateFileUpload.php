@@ -22,15 +22,27 @@ class AffiliateFileUpload extends Component
     protected AffiliateDistanceService $affiliateDistanceService;
     protected AffiliateFileParserService $affiliateFileParserService;
 
+    /**
+     * Boot the component and inject dependencies.
+     *
+     * @param AffiliateDistanceService   $affiliateDistanceService Service to filter affiliates by distance
+     * @param AffiliateFileParserService $affiliateFileParserService Service to parse affiliate files
+     *
+     * @return void
+     */
     public function boot(
         AffiliateDistanceService $affiliateDistanceService,
         AffiliateFileParserService $affiliateFileParserService,
-    ): void
-    {
+    ): void {
         $this->affiliateDistanceService = $affiliateDistanceService;
         $this->affiliateFileParserService = $affiliateFileParserService;
     }
 
+    /**
+     * Handle affiliate file update event.
+     *
+     * @return void
+     */
     public function updatedAffiliateFile(): void
     {
         $this->validate();
@@ -38,21 +50,29 @@ class AffiliateFileUpload extends Component
     }
 
     /**
+     * Render the Livewire component view.
+     *
      * @return Factory|View
      */
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.affiliate-file-upload');
     }
 
     /**
+     * Process the uploaded affiliate file.
+     *
      * @return void
      */
     protected function processFile(): void
     {
         try {
-            $affiliatesData = $this->affiliateFileParserService->parseFile($this->affiliateFile->getRealPath());
-            $this->affiliateCollection = $this->affiliateDistanceService->filterByDistance($affiliatesData);
+            $affiliatesData = $this->affiliateFileParserService->parseFile(
+                $this->affiliateFile->getRealPath()
+            );
+            $this->affiliateCollection = $this->affiliateDistanceService->filterByDistance(
+                $affiliatesData
+            );
         } catch (\Exception $e) {
             $this->errorMessage = "Error processing file: " . $e->getMessage();
             $this->affiliateCollection = null;
@@ -60,6 +80,8 @@ class AffiliateFileUpload extends Component
     }
 
     /**
+     * Get the validation rules for affiliate file upload.
+     *
      * @return array[]
      */
     protected function rules(): array
