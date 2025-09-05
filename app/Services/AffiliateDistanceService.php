@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Generator;
 use Illuminate\Support\Collection;
 
 class AffiliateDistanceService
@@ -13,11 +14,11 @@ class AffiliateDistanceService
     private const float OFFICE_LONGITUDE = -6.2535495;
 
     /**
-     * @param array $affiliates
+     * @param Generator $affiliates
      *
      * @return Collection Filtered and sorted affiliates.
      */
-    public function filterByDistance(array $affiliates): Collection
+    public function filterByDistance(Generator $affiliates): Collection
     {
         return collect($affiliates)
             ->filter(
@@ -34,8 +35,8 @@ class AffiliateDistanceService
             ->values()
             ->map(
                 fn($affiliate) => [
-                'affiliate_id' => $affiliate['affiliate_id'],
-                'name' => $affiliate['name'],
+                    'affiliate_id' => $affiliate['affiliate_id'],
+                    'name' => $affiliate['name'],
                 ]
             );
     }
