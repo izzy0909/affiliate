@@ -2,21 +2,33 @@
 
 namespace App\Services;
 
+use Generator;
+
 class AffiliateFileParserService
 {
-    public function parseFile(string $filePath): array
+    /**
+     * @param string $filePath
+     *
+     * @return Generator
+     */
+    public function parseFile(string $filePath): Generator
     {
-        $fileLines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $file = new \SplFileObject($filePath, 'r');
+        $file->setFlags(\SplFileObject::DROP_NEW_LINE | \SplFileObject::SKIP_EMPTY);
 
-        return array_values(
-            array_filter(
-                array_map(
-                    function ($line) {
-                        return json_validate($line) ? json_decode($line, true) : null;
-                    },
-                    $fileLines
-                )
-            )
-        );
+        foreach ($file as $line) {
+            if ($line === null || $line === '') {
+                continue;
+            }
+
+            if (!json_validate($line)) {
+                continue;
+            }
+
+            $decoded = json_decode($line, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                yield $decoded;
+            }
+        }
     }
 }
