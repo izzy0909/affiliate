@@ -1,12 +1,38 @@
-<div class="flex flex-col items-center pt-5 h-screen">
+<div class="flex flex-col items-center pt-5 h-screen"
+     x-data="{ uploading: false, progress: 0 }"
+     x-on:livewire-upload-start="uploading = true"
+     x-on:livewire-upload-finish="uploading = false; progress = 0"
+     x-on:livewire-upload-error="uploading = false; progress = 0"
+     x-on:livewire-upload-progress="progress = $event.detail.progress">
+
     <div>
-        <input type="file" id="affiliateFile" wire:model="affiliateFile" class="hidden" />
+        <input type="file"
+               id="affiliateFile"
+               wire:model="affiliateFile"
+               class="hidden"
+               accept=".txt"
+        />
 
         <label for="affiliateFile"
-               class="cursor-pointer inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+               :class="{
+                   'opacity-50 cursor-not-allowed pointer-events-none': uploading,
+                   'cursor-pointer': !uploading
+               }"
+               :aria-disabled="uploading.toString()"
+               class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
             Upload File
         </label>
     </div>
+
+    <template x-if="uploading">
+        <div class="w-full max-w-md mt-4">
+            <div class="w-full bg-gray-200 rounded-full h-4">
+                <div class="bg-blue-600 h-4 rounded-full transition-all"
+                     :style="`width: ${progress}%`"></div>
+            </div>
+            <p class="text-center mt-1 text-sm text-gray-700" x-text="progress + '%'"></p>
+        </div>
+    </template>
 
     @error('affiliateFile')
         <div class="block mt-4 text-red-600">{{ $message }}</div>
