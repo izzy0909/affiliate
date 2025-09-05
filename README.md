@@ -42,6 +42,7 @@ Key features:
     -w /var/www/html \
     laravelsail/php84-composer:latest \
     composer install --ignore-platform-reqs`
+
    - `./vendor/bin/sail up -d`
 
 3. Install PHP dependencies via Sail:
