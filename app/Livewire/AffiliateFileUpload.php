@@ -45,8 +45,15 @@ class AffiliateFileUpload extends Component
      */
     public function updatedAffiliateFile(): void
     {
-        $this->validate();
-        $this->processFile();
+        try {
+            $this->validate();
+            $this->processFile();
+            $this->errorMessage = null;
+        } catch (\Exception $e) {
+            $this->errorMessage = "Error processing file: " . $e->getMessage();
+            $this->affiliateCollection = null;
+        }
+
     }
 
     /**
@@ -66,17 +73,12 @@ class AffiliateFileUpload extends Component
      */
     protected function processFile(): void
     {
-        try {
-            $affiliatesData = $this->affiliateFileParserService->parseFile(
-                $this->affiliateFile->getRealPath()
-            );
-            $this->affiliateCollection = $this->affiliateDistanceService->filterByDistance(
-                $affiliatesData
-            );
-        } catch (\Exception $e) {
-            $this->errorMessage = "Error processing file: " . $e->getMessage();
-            $this->affiliateCollection = null;
-        }
+        $affiliatesData = $this->affiliateFileParserService->parseFile(
+            $this->affiliateFile->getRealPath()
+        );
+        $this->affiliateCollection = $this->affiliateDistanceService->filterByDistance(
+            $affiliatesData
+        );
     }
 
     /**
