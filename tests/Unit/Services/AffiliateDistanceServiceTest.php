@@ -26,7 +26,13 @@ class AffiliateDistanceServiceTest extends TestCase
             ['affiliate_id' => 2, 'name' => 'Bob', 'latitude' => 56.0, 'longitude' => -7.0], // ~300 km away outside max distance
         ];
 
-        $result = $this->service->filterByDistance($affiliates);
+        $affiliatesGenerator = (function () use ($affiliates) {
+            foreach ($affiliates as $affiliate) {
+                yield $affiliate;
+            }
+        })();
+
+        $result = $this->service->filterByDistance($affiliatesGenerator);
 
         // Assert only 2 affiliates within max distance
         $this->assertInstanceOf(Collection::class, $result);
@@ -43,6 +49,7 @@ class AffiliateDistanceServiceTest extends TestCase
             $this->assertCount(2, $affiliate);
         }
     }
+
 
     public function testDistanceBetweenPointsReturnsZeroForSameCoordinates(): void
     {

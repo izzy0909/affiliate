@@ -39,7 +39,8 @@ class AffiliateFileParserServiceTest extends TestCase
 
     public function testParseFileFiltersInvalidJsonLines(): void
     {
-        $result = $this->service->parseFile($this->testFilePath);
+        $resultGenerator = $this->service->parseFile($this->testFilePath);
+        $result = iterator_to_array($resultGenerator);
 
         $this->assertCount(3, $result);
 
@@ -56,4 +57,5 @@ class AffiliateFileParserServiceTest extends TestCase
         $this->assertEquals(3, $result[2]['affiliate_id']);
         $this->assertEquals('Charlie', $result[2]['name']);
     }
+
 }
