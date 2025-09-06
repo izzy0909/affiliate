@@ -17,10 +17,6 @@ class AffiliateFileParserService
         $file->setFlags(\SplFileObject::DROP_NEW_LINE | \SplFileObject::SKIP_EMPTY);
 
         foreach ($file as $line) {
-            if ($line === null || $line === '') {
-                continue;
-            }
-
             if (!json_validate($line)) {
                 continue;
             }

@@ -5,6 +5,7 @@ namespace Tests\Unit\Livewire;
 use App\Livewire\AffiliateFileUpload;
 use App\Services\AffiliateDistanceService;
 use App\Services\AffiliateFileParserService;
+use Generator;
 use Illuminate\Http\UploadedFile;
 use Livewire\Livewire;
 use Mockery;
@@ -28,17 +29,23 @@ class AffiliateFileUploadTest extends TestCase
 
         $fakeFile = UploadedFile::fake()->create('affiliates.txt', 10);
 
-        $parsedData = [['affiliate_id' => 1, 'name' => 'Test Affiliate', 'latitude'=>53.3, 'longitude'=>-6.2]];
+        $parsedDataArray = [['affiliate_id' => 1, 'name' => 'Test Affiliate', 'latitude' => 53.3, 'longitude' => -6.2]];
+        $parsedDataGenerator = (function () use ($parsedDataArray) {
+            foreach ($parsedDataArray as $item) {
+                yield $item;
+            }
+        })();
+
         $filteredCollection = collect([['affiliate_id' => 1, 'name' => 'Test Affiliate']]);
 
         $mockParser->shouldReceive('parseFile')
             ->once()
             ->with(Mockery::type('string'))
-            ->andReturn($parsedData);
+            ->andReturn($parsedDataGenerator);
 
         $mockDistance->shouldReceive('filterByDistance')
             ->once()
-            ->with($parsedData)
+            ->with(Mockery::type(Generator::class))
             ->andReturn($filteredCollection);
 
         $this->app->instance(AffiliateFileParserService::class, $mockParser);
@@ -78,7 +85,7 @@ class AffiliateFileUploadTest extends TestCase
         $reflection = new \ReflectionClass(AffiliateFileUpload::class);
         $method = $reflection->getMethod('rules');
         $method->setAccessible(true);
-        $rules = $method->invoke($this->service);;
+        $rules = $method->invoke($this->service);
 
         $this->assertArrayHasKey('affiliateFile', $rules);
         $this->assertContains('required', $rules['affiliateFile']);
