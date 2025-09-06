@@ -36,12 +36,7 @@ Key features:
     `git clone git@github.com:izzy0909/affiliate.git`
 
 2. Start Sail and services in the background:
-   - `docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php84-composer:latest \
-    composer install --ignore-platform-reqs`
+   - `docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs`
 
    - `./vendor/bin/sail up -d`
 
