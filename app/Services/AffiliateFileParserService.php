@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Generator;
+use SplFileObject;
 
 class AffiliateFileParserService
 {
@@ -13,8 +14,8 @@ class AffiliateFileParserService
      */
     public function parseFile(string $filePath): Generator
     {
-        $file = new \SplFileObject($filePath, 'r');
-        $file->setFlags(\SplFileObject::DROP_NEW_LINE | \SplFileObject::SKIP_EMPTY);
+        $file = new SplFileObject($filePath, 'r');
+        $file->setFlags(SplFileObject::DROP_NEW_LINE | SplFileObject::SKIP_EMPTY);
 
         foreach ($file as $line) {
             if (!json_validate($line)) {

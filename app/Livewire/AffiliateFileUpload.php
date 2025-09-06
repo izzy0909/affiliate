@@ -53,7 +53,6 @@ class AffiliateFileUpload extends Component
             $this->errorMessage = "Error processing file: " . $e->getMessage();
             $this->affiliateCollection = null;
         }
-
     }
 
     /**
